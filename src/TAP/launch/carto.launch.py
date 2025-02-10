@@ -1,44 +1,21 @@
 import os
-from launch import LaunchDescription
+from ament_index_python.packages import get_package_share_directory
 from launch_ros.actions import Node
-
-# Hardcoded package path for Windows
-ROS_WS = r"C:\Users\josti\Documents\ros_ws"
-PKG_PATH = os.path.join(ROS_WS, "src", "tap")
+from launch import LaunchDescription
 
 def generate_launch_description():
-    # Hardcoded configuration file path
-    configuration_directory = os.path.join(PKG_PATH, "config")
-    configuration_basename = "cartographer_noodom_x3.lua"
+    tap_config_dir = os.path.join(get_package_share_directory('tap'), 'config')
 
-    # Nodes
+    print("Using config directory:", tap_config_dir)  # Debugging
+
     cartographer_node = Node(
-        package="cartographer_ros",
-        executable="cartographer_node",
-        name="cartographer_node",
-        output="screen",
-        parameters=[{"use_sim_time": True}],
+        package='cartographer_ros',
+        executable='cartographer_node',
         arguments=[
-            "-configuration_directory", configuration_directory,
-            "-configuration_basename", configuration_basename
+            '-configuration_directory', tap_config_dir,
+            '-configuration_basename', 'cartographer_noodom_x3.lua'
         ],
+        output='screen'
     )
 
-    cartographer_occupancy_grid_node = Node(
-        package="cartographer_ros",
-        executable="cartographer_occupancy_grid_node",
-        name="cartographer_occupancy_grid_node",
-        output="screen",
-        parameters=[{"use_sim_time": True}],
-        arguments=[
-            "-resolution", "0.05",
-            "-publish_period_sec", "1.0"
-        ],
-    )
-
-    # Launch description
-    ld = LaunchDescription()
-    ld.add_action(cartographer_node)
-    ld.add_action(cartographer_occupancy_grid_node)
-
-    return ld
+    return LaunchDescription([cartographer_node])
