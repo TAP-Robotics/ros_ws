@@ -4,7 +4,7 @@ from launch_ros.actions import Node
 from launch import LaunchDescription
 
 def generate_launch_description():
-    tap_config_dir = os.path.join(get_package_share_directory('tap'), 'config')
+    tap_config_dir = os.path.join(get_package_share_directory('TAP'), 'config')
 
     print("Using config directory:", tap_config_dir)  # Debugging
 
